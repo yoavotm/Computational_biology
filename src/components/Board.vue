@@ -2,8 +2,8 @@
 <!-- board of width * height cells -->
 <table>
     <tbody>
-      <tr v-for="i in 100" :key="i">
-        <td v-for="j in 100" :key="j" :style="{ backgroundColor: cellColors[i][j] }"></td>
+      <tr v-for="i in height" :key="i">
+        <td v-for="j in width" :key="j" :style="{ backgroundColor: currentBoard[i][j] }"></td>
       </tr>
     </tbody>
   </table>
@@ -23,7 +23,7 @@ export default {
     data() {
         return {
             pValue: 1,
-            distrabution: [0.25 , 0.25 , 0.25 , 0.25],
+            distrabutionValue: [0.25 , 0.25 , 0.25 , 0.25],
             currentBoard: [],
         }
     },

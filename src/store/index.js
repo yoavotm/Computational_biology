@@ -20,6 +20,10 @@ export default createStore({
     P: 0,
     // the probability distribution of the 4 states for a human - S1, S2, S3, S4 - in the following order
     distrabution: [0.25, 0.25, 0.25, 0.25],
+    // the state of the side bar
+    sideBarCollapsed: false,
+    // the state of the right side bar
+    rightSideBarCollapsed: false,
   },
   getters: {
     getWidth: (state) => state.width,
@@ -29,6 +33,8 @@ export default createStore({
     getBoards: (state) => state.boards,
     getP: (state) => state.P,
     getDistrabution: (state) => state.distrabution,
+    sideBarCollapsed: (state) => state.sideBarCollapsed,
+    rightSideBarCollapsed: (state) => state.rightSideBarCollapsed,
   },
   mutations: {
     setWidth: (state, width) => (state.width = width),
@@ -39,6 +45,9 @@ export default createStore({
     setP: (state, P) => (state.P = P),
     setDistrabution: (state, distrabution) =>
       (state.distrabution = distrabution),
+    sideBarCollapsed: (state, bool) => (state.sideBarCollapsed = bool),
+    rightSideBarCollapsed: (state, bool) =>
+      (state.rightSideBarCollapsed = bool),
   },
 
   actions: {
@@ -63,6 +72,12 @@ export default createStore({
     },
     updateDistrabution({ commit }, arr) {
       commit("setDistrabution", arr);
+    },
+    updateSideBarCollapsed({ commit }, bool) {
+      commit("sideBarCollapsed", bool);
+    },
+    updateRightSideBarCollapsed({ commit }, bool) {
+      commit("rightSideBarCollapsed", bool);
     },
   },
 });

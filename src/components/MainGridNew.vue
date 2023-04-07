@@ -6,63 +6,30 @@
                 <MainSidePanel />
             </div>
             <div class="gutter-col gutter-col-1 bg-grey-1" :class="{ collapsed_gutter: sideBarCollapsed }"
-                id="main_gutter_1"></div>
-            <div style="grid-column: 5 / -1; grid-row: -2 / 5;">
-                <RightSidePanel />
+                id="main_gutter_1">
+            <Board />
             </div>
             <div class="gutter-col gutter-col-3 bg-grey-1" id="main_gutter_2"
                 :class="{ collapsed_gutter: rightSideBarCollapsed }"></div>
-            <div style="grid-area: 3 / 3 / 5 / 4;" id="two">
-                <CallTraceGrid />
-            </div>
             <div class="gutter-row gutter-row-1 bg-grey-1" id="main_gutter_3"></div>
-            <div class="crumbs_wrapper row q-my-sm" style="grid-column:3 / 6; grid-row: 1 / 2;">
-                <Transition>
-                    <BreadCrumbs v-if="isOutputSelected && !isTreeLoading && !globalResSelected" />
-                    <div class="row full-width q-my-auto skeleton_absolute_left"
-                        v-else-if="(!isOutputSelected && !isTreeLoading) || globalResSelected">
-                        <q-badge class="bread_crumbs_empty q-my-auto" />
-                        <q-badge class="bread_crumbs_empty q-my-auto" />
-                        <q-badge class="bread_crumbs_empty q-my-auto" />
-                        <q-space />
-                        <q-badge style="width:32px; height:32px; margin-right: 0;" class="bread_crumbs_empty" />
-
-                    </div>
-                    <q-item v-else-if="isTreeLoading" class="skeleton_absolute_left row ">
-                        <q-item-section>
-
-                            <q-item-label caption>
-                                <q-skeleton type="text" />
-                            </q-item-label>
-                            <q-item-label caption>
-                                <q-skeleton type="text" />
-                            </q-item-label>
-                            <q-item-label caption>
-                                <q-skeleton type="text" />
-                            </q-item-label>
-                        </q-item-section>
-                    </q-item>
-                </Transition>
-
-            </div>
         </div>
     </div>
 </template>
 
 <script>
 import MainSidePanel from './MainSidePanel.vue'
+import Board from './Board.vue'
 import Split from 'split-grid'
 
 import { ref } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
-import RightSidePanel from './RightSidePanel.vue';
 
 
 
 export default {
     components: {
-        RightSidePanel,
         MainSidePanel,
+        Board
     },
 
     computed: mapGetters(['sideBarCollapsed', 'rightSideBarCollapsed']),

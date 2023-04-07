@@ -1,5 +1,6 @@
 <script>
 import { mapActions, mapGetters } from "vuex"
+import MainGridNew from "./components/MainGridNew.vue"
 
 export default {
     components: { MainGridNew },
