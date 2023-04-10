@@ -2,8 +2,8 @@
     <div class="full-height full-width row no-wrap overflow-hidden">
         <q-tabs v-model="tab" vertical class="text-primary bg-grey-2" id="main_tabs" active-bg-color="grey-1"
             indicator-color="transparent">
-            <q-tab name="rules" @click="expandSidePanel(e, 'rules')">
-                <q-icon class="side_nav_icon icon-kindruleList" />
+            <q-tab name="rules" @click="expandSidePanel(e, 'variables')">
+                <q-icon class="side_nav_icon icon-kindvariables" />
                 <q-tooltip anchor="center left" self="center right">Rules</q-tooltip>
             </q-tab>
             <!-- wip tabs -->
@@ -22,27 +22,23 @@
             </q-btn>
 
         </q-tabs>
-        <!-- <div class="full-height full-width q-pt-md bg-grey-1 column no-wrap">
-
-            <div class="q-px-md">
-                <ContractBtn />
-            </div>
+        <div class="full-height full-width q-pt-md bg-grey-1 column no-wrap">
             <q-tab-panels v-model="tab" animated vertical transition-prev="jump-right" transition-next="jump-left"
                 class="full-width full-height" style="background:transparent; ">
-                <q-tab-panel name="rules" class="q-py-none">
-                    <MainTreeView />
+                <q-tab-panel name="variables" class="q-py-none">
+                    hello variables
                 </q-tab-panel>
                 <q-tab-panel name="info" class="q-py-none">
-                    <MainTabsDrawer class="q-pr-md" />
+                    hello info
                 </q-tab-panel>
                 <q-tab-panel name="list" class="q-py-none">
-                    <ContractList />
+                    <!-- <ContractList /> -->
                 </q-tab-panel>
                 <q-tab-panel name="global" class="q-py-none">
-                    <GlobalCallResolution />
+                    <!-- <GlobalCallResolution /> -->
                 </q-tab-panel>
             </q-tab-panels>
-        </div> -->
+        </div>
     </div>
 </template>
 
@@ -63,20 +59,20 @@ export default {
 
     methods: {
         expandSidePanel(e, x) {
-            if (x === 'global') {
-                this.updateglobalResSelected(true)
-            } else {
-                this.updateglobalResSelected(false)
-            }
-
+            console.log("expandSidePanel", x, this.tab, this.sideBarCollapsed)
             if (this.tab !== x && !this.sideBarCollapsed) return
             this.updateSideBarCollapsed(!this.sideBarCollapsed)
         },
-        ...mapActions(['updateSideBarCollapsed', 'updateglobalResSelected'])
+        ...mapActions(['updateSideBarCollapsed', ])
     },
 }
 </script>
+
 <style scoped>
+.icon-kindvariables:before {
+  content: "\e923";
+  color: #5a5c69;
+}
 .iconInfoTrace {
     width: 10px;
     height: 10px;
