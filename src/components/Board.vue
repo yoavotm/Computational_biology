@@ -26,6 +26,27 @@ export default {
     created() {
         this.currentBoard = this.boards.current
     },
+    watch: {
+        // watch state changes and update the data
+        p(newVal, oldVal) {
+            if (newVal < 0 || newVal > 1 || oldVal === newVal) return
+            this.pValue = newVal
+        },
+        distrabution(newVal, oldVal) {
+            if (newVal.length !== 4 || oldVal === newVal) return
+            this.distrabutionValue = newVal
+        },
+        height(newVal, oldVal) {
+            if (newVal < 0 || oldVal === newVal) return
+            this.heightValue = newVal
+        },
+        width(newVal, oldVal) {
+            if (newVal < 0 || oldVal === newVal) return
+            this.widthValue = newVal
+        },
+
+
+    },
     methods: {
         cellToColor(cell) {
             // cell is one of {S1, S2, S3, S4, E} (E is empty), given a cell, return the color
