@@ -4,16 +4,16 @@
             indicator-color="transparent">
             <q-tab name="rules" @click="expandSidePanel(e, 'variables')">
                 <span class="icon-kindvariables" ></span>
-                <q-tooltip anchor="center left" self="center right">Rules</q-tooltip>
+                <q-tooltip anchor="center left" self="center right">variables</q-tooltip>
             </q-tab>
             <!-- wip tabs -->
             <!-- <q-tab name="fileTabs" @click="expandSidePanel(e, 'fileTabs')">
             <q-icon class="side_nav_icon icon-kindfiles" />
             <q-tooltip anchor="center left" self="center right">File View</q-tooltip>
         </q-tab> -->
-            <q-tab name="info" @click="expandSidePanel(e, 'info')">
+            <q-tab name="info" @click="expandSidePanel(e, 'part b')">
                 <q-icon class="side_nav_icon icon-kindinfo" />
-                <q-tooltip anchor="center left" self="center right">Job Info</q-tooltip>
+                <q-tooltip anchor="center left" self="center right">part b</q-tooltip>
             </q-tab>
             <q-space />
             <q-btn @click="updateSideBarCollapsed(!sideBarCollapsed)"
@@ -26,16 +26,12 @@
             <q-tab-panels v-model="tab" animated vertical transition-prev="jump-right" transition-next="jump-left"
                 class="full-width full-height" style="background:transparent; ">
                 <q-tab-panel name="variables" class="q-py-none">
-                    hello variables
+                    ____________
+                    <Varibales/>
+                    ____________
                 </q-tab-panel>
-                <q-tab-panel name="info" class="q-py-none">
-                    hello info
-                </q-tab-panel>
-                <q-tab-panel name="list" class="q-py-none">
-                    <!-- <ContractList /> -->
-                </q-tab-panel>
-                <q-tab-panel name="global" class="q-py-none">
-                    <!-- <GlobalCallResolution /> -->
+                <q-tab-panel name="part b" class="q-py-none">
+                    hello part b
                 </q-tab-panel>
             </q-tab-panels>
         </div>
@@ -45,20 +41,23 @@
 <script>
 import { ref } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
+import Varibales from './Varibales.vue'
 
 export default {
     components: {
         // MainTabsDrawer,
+        Varibales
     },
     computed: { ...mapGetters(['', 'sideBarCollapsed', 'fileViewOpen']) },
     setup() {
         return {
-            tab: ref('rules'),
+            tab: ref('variables'),
         }
     },
 
     methods: {
         expandSidePanel(e, x) {
+            return
             console.log("expandSidePanel", x, this.tab, this.sideBarCollapsed)
             if (this.tab !== x && !this.sideBarCollapsed) return
             this.updateSideBarCollapsed(!this.sideBarCollapsed)
