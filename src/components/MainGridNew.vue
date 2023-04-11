@@ -1,3 +1,4 @@
+
 <template>
     <div class="row full-height no-wrap full-width">
         <!-- grid -->
@@ -5,13 +6,11 @@
             <div style="grid-column: 1 / 2; grid-row: 1 / 5;" id="one">
                 <MainSidePanel />
             </div>
-            <div class="gutter-col gutter-col-1 bg-grey-1" :class="{ collapsed_gutter: sideBarCollapsed }"
-                id="main_gutter_1">
-            <Board />
+            <div style="grid-area: 3 / 4 / 4 / 3;" id="two">
+                <div class="board-wrapper">
+                    <Board />
+                </div>
             </div>
-            <div class="gutter-col gutter-col-3 bg-grey-1" id="main_gutter_2"
-                :class="{ collapsed_gutter: rightSideBarCollapsed }"></div>
-            <div class="gutter-row gutter-row-1 bg-grey-1" id="main_gutter_3"></div>
         </div>
     </div>
 </template>
@@ -62,19 +61,22 @@ export default {
     },
     methods: {
         gutter_expand(side) {
+            return
             this.collapsed = false;
             this.gutter_collapse_expand(side, '350px', this.$refs.grid.style.gridTemplateColumns.split(' '))
         },
         gutter_collapse(side) {
-            this.collapsed = true;  
+            return
+            this.collapsed = true;
             this.gutter_collapse_expand(side, '50px', this.$refs.grid.style.gridTemplateColumns.split(' '))
         },
 
-        gutter_collapse_expand(side, size, currentStyle){
+        gutter_collapse_expand(side, size, currentStyle) {
+            return
             // style from DOMelement returns [''] if it was never moved (has no inline styles)
             let gridColArr = currentStyle
             // check for inline styles
-            if(currentStyle.length === 1) {
+            if (currentStyle.length === 1) {
                 //"apply" baseStyle from CSS
                 gridColArr = ['350px', '1px', 'auto', '1px', '350px']
             }
@@ -88,6 +90,7 @@ export default {
     },
     mounted() {
         // https://split.js.org/
+        return
         this.instance = Split({
             columnGutters: [{
                 track: 1,
@@ -105,14 +108,27 @@ export default {
     }
 }
 </script>
+
+
 <style scoped>
+.board-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.board-wrapper>div {
+    margin: auto;
+}
+
 .grid {
     display: grid;
     grid-template-rows: auto 0px 1fr;
     /* grid-template-columns: 1fr 1px 1fr 1px 1fr; */
     grid-template-columns: 350px 1px auto 1px 350px;
 }
-
 
 .gutter-col {
     z-index: 9;
@@ -155,5 +171,4 @@ export default {
 .collapsed_gutter {
     width: 0;
     margin: 0;
-}
-</style>
+}</style>

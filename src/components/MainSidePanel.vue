@@ -3,7 +3,7 @@
         <q-tabs v-model="tab" vertical class="text-primary bg-grey-2" id="main_tabs" active-bg-color="grey-1"
             indicator-color="transparent">
             <q-tab name="rules" @click="expandSidePanel(e, 'variables')">
-                <q-icon class="side_nav_icon icon-kindvariables" />
+                <span class="icon-kindvariables" ></span>
                 <q-tooltip anchor="center left" self="center right">Rules</q-tooltip>
             </q-tab>
             <!-- wip tabs -->
@@ -69,10 +69,6 @@ export default {
 </script>
 
 <style scoped>
-.icon-kindvariables:before {
-  content: "\e923";
-  color: #5a5c69;
-}
 .iconInfoTrace {
     width: 10px;
     height: 10px;

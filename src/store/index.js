@@ -4,16 +4,173 @@ import { createStore } from "vuex";
 export default createStore({
   state: {
     // the width of the board
-    width: 0,
+    width: 6,
     // the height of the board
-    height: 0,
+    height: 6,
     // the number of iterations in the simulation
     iterations: 0,
     // the number of iterations that a human doesnt pass the rumer after he passes it
     L: 0,
     // the board and the previous board
     boards: {
-      current: [],
+      current: [
+        [
+          {
+            value: "S1",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S2",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S1",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S4",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S5",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S3",
+            turnsUntilSpread: 0,
+          },
+        ],
+        [
+          {
+            value: "S1",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S2",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S1",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S4",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S5",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S3",
+            turnsUntilSpread: 0,
+          },
+        ],
+        [
+          {
+            value: "S1",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S2",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S1",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S4",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S5",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S3",
+            turnsUntilSpread: 0,
+          },
+        ],
+        [
+          {
+            value: "S1",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S2",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S1",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S4",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S5",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S3",
+            turnsUntilSpread: 0,
+          },
+        ],
+        [
+          {
+            value: "S1",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S2",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S1",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S4",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S5",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S3",
+            turnsUntilSpread: 0,
+          },
+        ],
+        [
+          {
+            value: "S1",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S2",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S1",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S4",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S5",
+            turnsUntilSpread: 0,
+          },
+          {
+            value: "S3",
+            turnsUntilSpread: 0,
+          },
+        ],
+      ],
       last: [],
     },
     // the number of humans in the simulation
