@@ -1,10 +1,20 @@
 <template>
-    <div class="">
-      <div v-for="(row, rowIndex) in currentBoard" :key="rowIndex" class="row">
-        <div v-for="(cell, cellIndex) in row" :key="cellIndex" :style="{ backgroundColor:  cellToColor(cell.value) }" class="cell"></div>
-      </div>
+    <div>
+        <button @click="start">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-fill"
+                viewBox="0 0 16 16">
+                <path
+                    d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
+            </svg>
+        </button>
     </div>
-  </template>
+    <div class="">
+        <div v-for="(row, rowIndex) in currentBoard" :key="rowIndex" class="row">
+            <div v-for="(cell, cellIndex) in row" :key="cellIndex" :style="{ backgroundColor: cellToColor(cell.value) }"
+                class="cell"></div>
+        </div>
+    </div>
+</template>
 
 
 <script>
@@ -21,6 +31,7 @@ export default {
             pValue: 1,
             distrabutionValue: [0.25, 0.25, 0.25, 0.25],
             currentBoard: [],
+            itration: 0,
         }
     },
     created() {
@@ -48,6 +59,10 @@ export default {
 
     },
     methods: {
+        start() {
+            // start the rummer process
+
+        },
         cellToColor(cell) {
             // cell is one of {S1, S2, S3, S4, E} (E is empty), given a cell, return the color
             switch (cell) {
@@ -70,15 +85,13 @@ export default {
 </script>
 
 <style scoped>
-
-
 .row {
-  display: flex;
+    display: flex;
 }
 
 .cell {
-  width: 20px;
-  height: 20px;
-  border: 1px solid black;
+    width: 20px;
+    height: 20px;
+    border: 1px solid black;
 }
 </style>

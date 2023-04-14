@@ -36,7 +36,7 @@ import { mapGetters, mapActions, mapState } from "vuex"
 export default {
     components: {},
     computed: {
-        ...mapState(['height', 'width', 'distrabution', 'p', 'boards'])
+        ...mapState(['height', 'width', 'distrabution', 'P', 'boards'])
     },
     data() {
         return {
@@ -47,7 +47,9 @@ export default {
         }
     },
     created() {
-        this.pValue = this.p
+        this.pValue = this.P
+        console.log("p")
+        console.log(this.P)
         this.distrabutionValue = this.distrabution
         this.heightValue = this.height
         this.widthValue = this.width

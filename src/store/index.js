@@ -174,7 +174,7 @@ export default createStore({
       last: [],
     },
     // the number of humans in the simulation
-    P: 0,
+    P: 0.75,
     // the probability distribution of the 4 states for a human - S1, S2, S3, S4 - in the following order
     distrabution: [0.25, 0.25, 0.25, 0.25],
     // the state of the side bar
