@@ -8,179 +8,24 @@ export default createStore({
     // the height of the board
     height: 6,
     // the number of iterations in the simulation
-    iterations: 0,
+    iterations: 10,
     // the number of iterations that a human doesnt pass the rumer after he passes it
-    L: 0,
+    L: 1,
     // the board and the previous board
     boards: {
-      current: [
-        [
-          {
-            value: "S1",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S2",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S1",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S4",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S5",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S3",
-            turnsUntilSpread: 0,
-          },
-        ],
-        [
-          {
-            value: "S1",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S2",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S1",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S4",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S5",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S3",
-            turnsUntilSpread: 0,
-          },
-        ],
-        [
-          {
-            value: "S1",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S2",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S1",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S4",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S5",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S3",
-            turnsUntilSpread: 0,
-          },
-        ],
-        [
-          {
-            value: "S1",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S2",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S1",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S4",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S5",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S3",
-            turnsUntilSpread: 0,
-          },
-        ],
-        [
-          {
-            value: "S1",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S2",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S1",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S4",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S5",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S3",
-            turnsUntilSpread: 0,
-          },
-        ],
-        [
-          {
-            value: "S1",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S2",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S1",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S4",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S5",
-            turnsUntilSpread: 0,
-          },
-          {
-            value: "S3",
-            turnsUntilSpread: 0,
-          },
-        ],
-      ],
+      current: [],
       last: [],
     },
     // the number of humans in the simulation
-    P: 0.75,
+    P: 0.95,
     // the probability distribution of the 4 states for a human - S1, S2, S3, S4 - in the following order
-    distrabution: [0.25, 0.25, 0.25, 0.25],
+    distrabution: [0.75, 0.2, 0.05, 0.00],
     // the state of the side bar
     sideBarCollapsed: false,
     // the state of the right side bar
     rightSideBarCollapsed: false,
+    isBoardRunning: false,
+    currentIteration: 0,
   },
   getters: {
     getWidth: (state) => state.width,
@@ -192,6 +37,8 @@ export default createStore({
     getDistrabution: (state) => state.distrabution,
     sideBarCollapsed: (state) => state.sideBarCollapsed,
     rightSideBarCollapsed: (state) => state.rightSideBarCollapsed,
+    isBoardRunning: (state) => state.isBoardRunning,
+    currentIteration: (state) => state.currentIteration,
   },
   mutations: {
     setWidth: (state, width) => (state.width = width),
@@ -205,6 +52,8 @@ export default createStore({
     sideBarCollapsed: (state, bool) => (state.sideBarCollapsed = bool),
     rightSideBarCollapsed: (state, bool) =>
       (state.rightSideBarCollapsed = bool),
+    isBoardRunning: (state, bool) => (state.isBoardRunning = bool),
+    currentIteration: (state, int) => (state.currentIteration = int),
   },
 
   actions: {
@@ -235,6 +84,103 @@ export default createStore({
     },
     updateRightSideBarCollapsed({ commit }, bool) {
       commit("rightSideBarCollapsed", bool);
+    },
+    updateIsBoardRunning({ commit }, bool) {
+      commit("isBoardRunning", bool);
+    },
+    updateCurrentIteration({ commit }, int) {
+      commit("currentIteration", int);
+    },
+
+    // this function is called when the user change one of the parameters, it will update the boards with the new parameters
+    updateBoard({ commit, state }) {
+      // get the new parameters
+      const width = state.width;
+      const height = state.height;
+      const iterations = state.iterations;
+      const L = state.L;
+      const P = state.P;
+      const distrabution = state.distrabution;
+      let peopleIndexes = [];
+
+      // calculate the number of humans in the simulation
+      let humansNumber = Math.floor(P * width * height);
+      console.log(humansNumber);
+
+      for (let index = 0; index < humansNumber; index++) {
+        // get random index for the human
+        let random_i = Math.floor(Math.random() * width);
+        let random_j = Math.floor(Math.random() * height);
+        // check if the index is already taken
+        while (peopleIndexes.find((index) => index.x === random_i && index.y === random_j) !== undefined) {
+          random_i = Math.floor(Math.random() * width);
+          random_j = Math.floor(Math.random() * height);
+        }
+        // add the index to the array
+        peopleIndexes.push({x: random_i, y: random_j});
+      }
+      // each array represents one of the 4 states of the simulation - S1, S2, S3, S4
+      let indexes = [[], [], [], []]
+      // choose the number of people for each state according to the distrabution, and add the indexes to the array
+      let numbers = distrabution.map((number) => Math.floor(number * humansNumber));
+      let sum = 0;
+      for (let index = 0; index < numbers.length; index++) {
+        for (let i = 0; i < numbers[index]; i++) {
+          // choose random index for the human from the peopleIndexes array
+          let randomIndex = Math.floor(Math.random() * peopleIndexes.length);
+          // add the index to the array
+          indexes[index].push(peopleIndexes[randomIndex]);
+          // remove the index from the peopleIndexes array
+          peopleIndexes.splice(randomIndex, 1);
+          sum += 1;
+        }
+      }
+      // add the rest of the indexes to the highest probability index
+      let max = Math.max(...numbers);
+      let maxIndex = numbers.indexOf(max);
+      // add the rest of the indexes to the array
+      for (let index = 0; index < peopleIndexes.length; index++) {
+        indexes[maxIndex].push(peopleIndexes[index]);
+      }
+
+      // create the board
+      let board = [];
+      for (let i = 0; i < height; i++) {
+        let row = [];
+        for (let j = 0; j < width; j++) {
+             // create a cell
+             let cell = {
+              value: "E",
+              L: 0,
+              heard: 0,
+              knowRumor: 0,
+            };
+          // check if the cell is a human
+            if (indexes[0] && indexes[0].find((index) => index.x === i && index.y === j) !== undefined) {
+              cell.value = 'S1';
+            } else if (indexes[1] && indexes[1].find((index) => index.x === i && index.y === j) !== undefined) {
+              cell.value = 'S2';
+            } else if (indexes[2] && indexes[2].find((index) => index.x === i && index.y === j) !== undefined) {
+              cell.value = 'S3';
+            } else if (indexes[3] && indexes[3].find((index) => index.x === i && index.y === j) !== undefined) {
+              cell.value = 'S4';
+            }
+            // add the cell to the row
+            row.push(cell);
+        }
+        // add the row to the board
+        board.push(row);
+      }
+
+      // create the new boards array
+      let newBoard = {
+        current: board,
+        last: board,
+      };
+      // update the boards in the store
+      commit("setBoards", newBoard);
+      // update the current iteration in the store
+      commit("currentIteration", 0);
     },
   },
 });

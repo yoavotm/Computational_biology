@@ -6,11 +6,12 @@ export default {
     components: { MainGridNew },
     computed: { ...mapGetters([]) },
     methods: {
-        ...mapActions([])
+        ...mapActions(['updateBoard'])
 
     },
 
     created() {
+        this.updateBoard()
     }
 }
 
