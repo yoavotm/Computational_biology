@@ -1,12 +1,11 @@
 <script>
 import { mapActions, mapGetters } from "vuex"
 import MainGridNew from "./components/MainGridNew.vue"
-import { createSharedComposable } from "@vueuse/core";
 
 
 
 export default {
-    components: { MainGridNew, createSharedComposable },
+    components: { MainGridNew },
     computed: { ...mapGetters([]) },
     methods: {
         ...mapActions(['updateBoard'])

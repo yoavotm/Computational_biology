@@ -26,8 +26,6 @@
 <script>
 import MainSidePanel from './MainSidePanel.vue'
 import Board from './Board.vue'
-import Split from 'split-grid'
-
 import { ref } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 import MyCharts from './MyCharts.vue'
@@ -72,53 +70,6 @@ export default {
 
         }
     },
-    methods: {
-        gutter_expand(side) {
-            return
-            this.collapsed = false;
-            this.gutter_collapse_expand(side, '350px', this.$refs.grid.style.gridTemplateColumns.split(' '))
-        },
-        gutter_collapse(side) {
-            return
-            this.collapsed = true;
-            this.gutter_collapse_expand(side, '50px', this.$refs.grid.style.gridTemplateColumns.split(' '))
-        },
-
-        gutter_collapse_expand(side, size, currentStyle) {
-            return
-            // style from DOMelement returns [''] if it was never moved (has no inline styles)
-            let gridColArr = currentStyle
-            // check for inline styles
-            if (currentStyle.length === 1) {
-                //"apply" baseStyle from CSS
-                gridColArr = ['350px', '1px', 'auto', '1px', '350px']
-            }
-            // 50px || 350px
-            gridColArr[side] = size
-            // set new style
-            this.$refs.grid.style = `grid-template-columns: ${gridColArr.join(' ')};`
-        },
-        ...mapActions(['updateSideBarCollapsed'])
-
-    },
-    mounted() {
-        // https://split.js.org/
-        return
-        this.instance = Split({
-            columnGutters: [{
-                track: 1,
-                element: document.querySelector('.gutter-col-1'),
-            }, {
-                track: 3,
-                element: document.querySelector('.gutter-col-3'),
-            }],
-            rowGutters: [{
-                track: 1,
-                element: document.querySelector('.gutter-row-1'),
-            }],
-            columnMinSize: 350,
-        })
-    }
 }
 </script>
 
