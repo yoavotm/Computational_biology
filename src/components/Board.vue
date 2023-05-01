@@ -2,10 +2,19 @@
     <div style="position: relative;">
         <div style="margin-bottom: 5px;" v-if="seeType">
             colors:
-                <span class="color color-cell" style="background-color: #ff0000;">S1</span>
-                <span class="color color-cell" style="background-color: #0000ff;">S2</span>
-                <span class="color color-cell" style="background-color: #00ff00;">S3</span>
-                <span class="color color-cell" style="background-color: #ffff00;">S4</span>
+                <span class="color color-cell" style="background-color: red; color: white;">S1</span>
+                <span class="color color-cell" style="background-color: blue; color: white;">S2</span>
+                <span class="color color-cell" style="background-color: green; color: white;">S3</span>
+                <span class="color color-cell" style="background-color: yellow;  color: black;">S4</span>
+        </div>
+
+        <div style="margin-bottom: 5px;" v-else>
+            colors:
+                <span class="color color-cell info-cell" style="background-color: red; color: white">heard rumor</span>
+                <span class="color color-cell info-cell" style="background-color: green; color: white">didnt hear rumor</span>
+                <span class="color color-cell info-cell" style="background-color: yellow; color: black">hear rumor last generation</span>
+
+
         </div>
         <AnimationControl :startAnimationProp="start" :stopAnimationProp="stop" :slowAnimationProp="slowAnimation"
             :speedAnimationProp="speedAnimation" :isBoardRunningProp="isBoardRunning" :itrationProp="currentIteration"
@@ -250,7 +259,6 @@ export default {
                 if (cell.value === 'S3') return 'green'
                 if (cell.value === 'S4') return 'yellow'
                 if (cell.value === 'E') return 'white'
-
                 
             }
             if (cell.knowRumor === 1) return 'yellow'
@@ -365,6 +373,11 @@ export default {
     height: 30px;
     margin: 3px;
     border: 1px solid rgb(0, 0, 0);
+}
+
+.info-cell {
+    padding: 2px;
+    margin: 2px;
 }
 .row {
     /* display: flex; */
