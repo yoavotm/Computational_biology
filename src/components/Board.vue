@@ -1,21 +1,13 @@
 <template>
-    <!-- make the div be on top of the rest of the template-->
-    <div style="height: 250px;">
-        current iteration: {{ itration }}
-        <div>
-            <button @click="start">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-fill"
-                    viewBox="0 0 16 16">
-                    <path
-                        d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
-                </svg>
-            </button>
-        </div>
-    </div>
-    <div style="border-color: blue; background-color:darkgray; border-radius: 1px;">
-        <div v-for="(row, rowIndex) in currentBoard" :key="rowIndex" class="row">
-            <div v-for="(cell, cellIndex) in row" :key="cellIndex" :style="{ backgroundColor: cellToColor(cell.knowRumor) }"
-                class="cell"></div>
+    <div style="position: relative;">
+        <AnimationControl :startAnimationProp="start" :stopAnimationProp="stop"
+            :slowAnimationProp="slowAnimation" :speedAnimationProp="speedAnimation"
+            :isBoardRunningProp="isBoardRunning" :itrationProp="currentIteration" :waitingTime="waitingTime"/>
+        <div class="board">
+            <div v-for="(row, rowIndex) in currentBoard" :key="rowIndex" class="row">
+                <div v-for="(cell, cellIndex) in row" :key="cellIndex" :style="{ backgroundColor: cellToColor(cell) }"
+                    class="cell"></div>
+            </div>
         </div>
     </div>
 </template>
@@ -24,12 +16,18 @@
 <script>
 import { mapGetters, mapActions, mapState } from "vuex"
 import { probability } from '../store/probability.js'
+import AnimationControl from './AnimationControl.vue'
+import {ANIMATION_SPEED_DELTA, MAX_WAITING_TIME, MIN_WAITING_TIME, STARTING_WAITING_TIME} from '../store/consts.js'
+
 
 
 export default {
-    components: {},
+    components: {
+        AnimationControl
+    },
     computed: {
-        ...mapState(['height', 'width', 'distrabution', 'p', 'boards', 'iterations', 'currentIteration', 'L'])
+        ...mapState(['height', 'width', 'distrabution', 'p', 'boards', 'iterations', 'currentIteration',
+            'L', 'isBoardRunning', 'areDiagonalNeighbors', 'iswrapAround'])
     },
     data() {
         return {
@@ -37,10 +35,16 @@ export default {
             distrabutionValue: [0.25, 0.25, 0.25, 0.25],
             currentBoard: [],
             itration: 0,
+            waitingTime: STARTING_WAITING_TIME,
+            stopInTheMiddle: false,
+            iswrapAroundValue: false,
+            areDiagonalsNeighborsValue: false,
         }
     },
     created() {
         this.currentBoard = this.boards.current
+        this.iswrapAroundValue = this.iswrapAround
+        this.areDiagonalsNeighborsValue = this.areDiagonalNeighbors
     },
     watch: {
         // watch state changes and update the data
@@ -63,6 +67,9 @@ export default {
 
         boards(newVal, oldVal) {
             this.currentBoard = newVal.current
+            this.iswrapAroundValue = this.iswrapAround
+            this.areDiagonalsNeighborsValue = this.areDiagonalNeighbors
+            this.stopInTheMiddle = false;
         },
 
         currentIteration(newVal, oldVal) {
@@ -73,46 +80,166 @@ export default {
 
     },
     methods: {
-        ...mapActions(['updateIsBoardRunning', 'updateCurrentIteration']),
+        ...mapActions(['updateIsBoardRunning', 'updateCurrentIteration', 'collectStats']),
+        slowAnimation() {
+            console.log(MAX_WAITING_TIME)
+            if (this.waitingTime < MAX_WAITING_TIME) {
+                this.waitingTime += ANIMATION_SPEED_DELTA
+            }
+        },
+
+        speedAnimation() {
+            if (this.waitingTime > MIN_WAITING_TIME) {
+                this.waitingTime -= ANIMATION_SPEED_DELTA
+            }
+        },
+        stop() {
+            this.updateIsBoardRunning(false)
+            this.stopInTheMiddle = true;
+        },
         choose_one() {
             let i = Math.floor(Math.random() * this.width);
             let j = Math.floor(Math.random() * this.height);
-            //this.currentBoard[i][j]["L"] = L;
             this.currentBoard[i][j].knowRumor = 1;
-            // make this cell S4
             this.currentBoard[i][j].value = 'S1';
             this.tell_neighbors(i, j);
         },
-        tell_neighbors(i, j) {
-            var x = [-1, 0, 1, 0];
-            var y = [0, -1, 0, 1];
-            const zip = (a, b) => a.map((k, i) => [k, b[i]]);
-            for (const [dx, dy] of zip(x, y)) {
-                if (i + dx >= 0 && i + dx < this.width && j + dy >= 0 && j + dy < this.height) {
-                    this.currentBoard[i + dx][j + dy]["heard"] += 1;
+
+        get_neighbors_wrap_arround(i, j) {
+            let neighbors = []
+            // check if the cell is on the edge of the board
+            if (i === 0) {
+                // if it is on the edge then the neighbors are the other side of the board
+                neighbors.push([this.width - 1, j])
+            } else {
+                // if it is not on the edge then the neighbors are the neighbors on the board
+                neighbors.push([i - 1, j])
+            }
+
+            if (i === this.width - 1) {
+                neighbors.push([0, j])
+            } else {
+                neighbors.push([i + 1, j])
+            }
+
+            if (j === 0) {
+                neighbors.push([i, this.height - 1])
+            } else {
+                neighbors.push([i, j - 1])
+            }
+
+            if (j === this.height - 1) {
+                neighbors.push([i, 0])
+            } else {
+                neighbors.push([i, j + 1])
+            }
+
+            if (this.areDiagonalNeighbors) {
+                if (i === 0 && j === 0) {
+                    neighbors.push([this.width - 1, this.height - 1])
+                } else if (i === 0 && j === this.height - 1) {
+                    neighbors.push([this.width - 1, 0])
+                } else if (i === this.width - 1 && j === 0) {
+                    neighbors.push([0, this.height - 1])
+                } else if (i === this.width - 1 && j === this.height - 1) {
+                    neighbors.push([0, 0])
+                } else if (i === 0) {
+                    neighbors.push([this.width - 1, j - 1])
+                    neighbors.push([this.width - 1, j + 1])
+                } else if (i === this.width - 1) {
+                    neighbors.push([0, j - 1])
+                    neighbors.push([0, j + 1])
+                } else if (j === 0) {
+                    neighbors.push([i - 1, this.height - 1])
+                    neighbors.push([i + 1, this.height - 1])
+                } else if (j === this.height - 1) {
+                    neighbors.push([i - 1, 0])
+                    neighbors.push([i + 1, 0])
+                } else {
+                    neighbors.push([i - 1, j - 1])
+                    neighbors.push([i - 1, j + 1])
+                    neighbors.push([i + 1, j - 1])
+                    neighbors.push([i + 1, j + 1])
                 }
             }
+
+            return neighbors
+        },
+
+        get_neighbors(i, j) {
+            let neighbors = []
+            // check if the cell is on the edge of the board
+            if (i !== 0) {
+                // if it is not on the edge then the neighbors are the neighbors on the board
+                neighbors.push([i - 1, j])
+            }
+
+            if (i !== this.width - 1) {
+                neighbors.push([i + 1, j])
+            }
+
+            if (j !== 0) {
+                neighbors.push([i, j - 1])
+            }
+
+            if (j !== this.height - 1) {
+                neighbors.push([i, j + 1])
+            }
+
+            if (this.areDiagonalNeighbors) {
+                if (i !== 0 && j !== 0) {
+                    neighbors.push([i - 1, j - 1])
+                }
+                if (i !== 0 && j !== this.height - 1) {
+                    neighbors.push([i - 1, j + 1])
+                }
+                if (i !== this.width - 1 && j !== 0) {
+                    neighbors.push([i + 1, j - 1])
+                }
+                if (i !== this.width - 1 && j !== this.height - 1) {
+                    neighbors.push([i + 1, j + 1])
+                }
+            }
+
+            return neighbors
+        },
+
+
+        tell_neighbors(i, j) {
+            // if the cell is on the edge of the board check if the board is wrap arround
+            // if it is wrap arround then the neighbors are also the other side of the board
+            // if it is not wrap arround then the neighbors are only the neighbors on the board
+            let neighbors = []
+            if (this.iswrapAroundValue) {
+                neighbors = this.get_neighbors_wrap_arround(i, j)
+            } else {
+                neighbors = this.get_neighbors(i, j)
+            }
+
+            // increase all neighbors "heard" by 1
+            for (let [x, y] of neighbors) {
+                if (this.currentBoard[x][y].value === 'E') continue
+                this.currentBoard[x][y].heard += 1
+            }
+
 
         },
 
         start() {
+            if (this.isBoardRunning) return
             this.updateIsBoardRunning(true)
-            this.choose_one();
-            let k = 1500;
-            for (let index = 0; index < this.iterations; index++) {
-                // wait k miliseconds between iterations
-                setTimeout(() => {
-                    this.start_round();
-                    this.itration++;
-                    this.updateCurrentIteration(this.itration)
-                }, k * index);
+            if (this.stopInTheMiddle === false) {
+                this.choose_one();
             }
+            this.start_round();
 
         },
-        cellToColor(num) {
-        if (num === 0) return 'white'
-        if (num === 1) return 'yellow'
-        if (num === 2) return 'black'
+        cellToColor(cell) {
+            if (cell.value === 'E') return 'white'
+            if (cell.knowRumor === 1) return 'yellow'
+            if (cell.knowRumor === 2) return 'red'
+            // if cell.knowRumor === 0 return bright green
+            if (cell.knowRumor === 0) return 'lime'
         },
 
         doubt(cell) {
@@ -158,12 +285,18 @@ export default {
         },
 
         start_round() {
+            if (!this.isBoardRunning) return
+            if (this.itration >= this.iterations) {
+                this.updateIsBoardRunning(false)
+                return
+            }
             this.updateKnowRumor();
 
             var positions = [];
             for (let i = 0; i < this.width; i++) {
                 for (let j = 0; j < this.height; j++) {
                     if (this.currentBoard[i][j].L > 0) {
+                        this.currentBoard[i][j]["heard"] = 0;
                         this.currentBoard[i][j].L--;
                         continue;
                     }
@@ -191,6 +324,17 @@ export default {
             if (this.itration == this.iterations - 1) {
                 this.updateIsBoardRunning(false)
             }
+            // create obj to collect stats
+            let statsObj = {
+                current: this.currentBoard,
+                iter: this.itration
+            }
+            this.collectStats(statsObj)
+
+            // update the current iteration
+            this.updateCurrentIteration(this.itration + 1)
+            // wait for the next round
+            setTimeout(this.start_round, this.waitingTime)
         }
     }
 }
@@ -203,9 +347,13 @@ export default {
     /* display: flex; */
 }
 
+.board {
+    display: grid;
+}
+
 .cell {
-    width: 20px;
-    height: 20px;
-    border: 1px solid black;
+    width: 6px;
+    height: 6px;
+    /* border: 1px solid rgb(68, 68, 68); */
 }
 </style>

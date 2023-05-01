@@ -11,6 +11,14 @@
                     <Board />
                 </div>
             </div>
+            <!-- div for charts, right side of the screen-->
+            <div style="grid-area: 3 / 4 / 4 / 5;" id="three">
+                <div class="chart-wrapper">
+                    <div class="chart-container">
+                        <MyCharts2 />
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -22,13 +30,18 @@ import Split from 'split-grid'
 
 import { ref } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
+import MyCharts from './MyCharts.vue'
+// import chart v2
+import MyCharts2 from './MyCharts2.vue'
 
 
 
 export default {
     components: {
         MainSidePanel,
-        Board
+        Board,
+        MyCharts,
+        MyCharts2
     },
 
     computed: mapGetters(['sideBarCollapsed', 'rightSideBarCollapsed']),
@@ -123,6 +136,24 @@ export default {
     margin: auto;
 }
 
+.chart-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.chart-wrapper>div {
+    margin-right: 200px;
+
+}
+
+.chart-container {
+    width: 100%;
+    height: 100%;
+}
+
 .grid {
     display: grid;
     grid-template-rows: auto 0px 1fr;
@@ -171,4 +202,5 @@ export default {
 .collapsed_gutter {
     width: 0;
     margin: 0;
-}</style>
+}
+</style>

@@ -7,15 +7,6 @@
         </div>
 
         <div class="board-settings__item">
-            <label for="height">height</label>
-            <input type="number" id="height" v-model.number="heightValue" step="1" min="0" :disabled="isBoardRunning">
-        </div>
-        <div class="board-settings__item">
-            <label for="width">width</label>
-            <input type="number" id="width" v-model.number="widthValue" step="1" min="0" :disabled="isBoardRunning">
-        </div>
-
-        <div class="board-settings__item">
             <label for="height">L</label>
             <input type="number" id="L" v-model.number="LValue" step="1" min="0" :disabled="isBoardRunning">
         </div>
@@ -39,10 +30,34 @@
                     :disabled="isBoardRunning" @change="distrabutionError">
             </div>
         </div>
+
+        <div>
+            <!-- checkbox to determinate if the board should be edge - connected -->
+            <input type="checkbox" id="edge" v-model="isWrapAroundValue" :disabled="isBoardRunning">
+
+            <label for="edge">&nbsp;&nbsp;Wrap Around</label>
+        </div>
+
+        <div>
+            <!-- check box to terminate if the neighbers of each cell is 4 sides or also diagonals-->
+            <input type="checkbox" id="diagonals" v-model="areDiagonalsNeighborsValue" :disabled="isBoardRunning">
+
+            <label for="diagonals">&nbsp;&nbsp;Moore neighborhood (diagonals as neighbers)</label>
+        </div>
     </div>
-    <button @click="generateBoard" :disabled="isBoardRunning">
+    <button @click="generateBoard" :disabled="isBoardRunning" class="button-generate"
+    :style="{color: errors.some(error => error.active) ? 'red' : 'green'}">
         genrate board
     </button>
+
+    <button @click="generateSlowBoard" :disabled="isBoardRunning" class="button-generate" >
+        genrate slow board
+    </button>
+
+    <button @click="generateFastBoard" :disabled="isBoardRunning" class="button-generate">
+        genrate fast board
+    </button>
+
     <div v-if="errors.some(error => error.active)">
         <div v-for="error in errors" :key="error.message">
             <p v-if="error.active" style="color: red; font-size: small; ">{{ error.message }}</p>
@@ -58,7 +73,7 @@ import { mapGetters, mapActions, mapState } from "vuex"
 export default {
     components: {},
     computed: {
-        ...mapState(['height', 'width', 'distrabution', 'P', 'boards', 'isBoardRunning', 'L'])
+        ...mapState(['height', 'width', 'distrabution', 'P', 'boards', 'isBoardRunning', 'L', 'areDiagonalNeighbors', 'isWrapAround'])
     },
     data() {
         return {
@@ -66,6 +81,8 @@ export default {
             distrabutionValue: [0.25, 0.25, 0.25, 0.25],
             heightValue: 10,
             widthValue: 10,
+            isWrapAroundValue: false,
+            areDiagonalsNeighborsValue: false,
             LValue: 2,
             errors: [{
                 message: 'p must be between 0 and 1',
@@ -87,16 +104,19 @@ export default {
                 message: 'L must be a positive number',
                 active: false,
             }
-        ],
+            ],
         }
     },
-    created() {
+    mounted() {
         console.log(this.isBoardRunning)
         this.pValue = this.P
         this.distrabutionValue = this.distrabution
         this.heightValue = this.height
         this.widthValue = this.width
         this.LValue = this.L
+        this.isWrapAroundValue = this.isWrapAround
+        this.areDiagonalsNeighborsValue = this.areDiagonalNeighbors
+
 
     },
     watch: {
@@ -125,9 +145,19 @@ export default {
             if (newVal < 0 || oldVal === newVal) return
             this.updateL(newVal)
         },
+        isWrapAroundValue(newVal, oldVal) {
+            if (oldVal === newVal) return
+            this.updateIswrapAround(newVal)
+        },
+        areDiagonalsNeighborsValue(newVal, oldVal) {
+            if (oldVal === newVal) return
+            this.updateAreDiagonalNeighbors(newVal)
+        }
+
     },
     methods: {
-        ...mapActions(['updateP', 'updateDistrabution', 'updateHeight', 'updateWidth', 'updateBoard', 'updateL']),
+        ...mapActions(['updateP', 'updateDistrabution', 'updateHeight', 'updateWidth', 'updateBoard', 'updateL',
+                       'updateIswrapAround', 'updateAreDiagonalNeighbors','generateSlowBoard', 'generateFastBoard']),
 
         // functions to check activation of each error
 
@@ -197,6 +227,14 @@ export default {
 
 
 <style scoped>
+
+.button-generate {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
 .board-settings {
     display: flex;
     flex-direction: column;
@@ -210,13 +248,14 @@ export default {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    margin: 10px;
+    margin: 7px;
 }
 
 .board-settings__item label {
-    margin: 10px;
+    margin: 7px;
 }
 
 .board-settings__item input {
-    margin: 10px;
-}</style>
+    margin: 7px;
+}
+</style>
