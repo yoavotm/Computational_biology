@@ -1,8 +1,15 @@
 <template>
     <div style="position: relative;">
-        <AnimationControl :startAnimationProp="start" :stopAnimationProp="stop"
-            :slowAnimationProp="slowAnimation" :speedAnimationProp="speedAnimation"
-            :isBoardRunningProp="isBoardRunning" :itrationProp="currentIteration" :waitingTime="waitingTime"/>
+        <div style="margin-bottom: 5px;" v-if="seeType">
+            colors:
+                <span class="color color-cell" style="background-color: #ff0000;">S1</span>
+                <span class="color color-cell" style="background-color: #0000ff;">S2</span>
+                <span class="color color-cell" style="background-color: #00ff00;">S3</span>
+                <span class="color color-cell" style="background-color: #ffff00;">S4</span>
+        </div>
+        <AnimationControl :startAnimationProp="start" :stopAnimationProp="stop" :slowAnimationProp="slowAnimation"
+            :speedAnimationProp="speedAnimation" :isBoardRunningProp="isBoardRunning" :itrationProp="currentIteration"
+            :waitingTime="waitingTime" />
         <div class="board">
             <div v-for="(row, rowIndex) in currentBoard" :key="rowIndex" class="row">
                 <div v-for="(cell, cellIndex) in row" :key="cellIndex" :style="{ backgroundColor: cellToColor(cell) }"
@@ -17,7 +24,7 @@
 import { mapGetters, mapActions, mapState } from "vuex"
 import { probability } from '../store/probability.js'
 import AnimationControl from './AnimationControl.vue'
-import {ANIMATION_SPEED_DELTA, MAX_WAITING_TIME, MIN_WAITING_TIME, STARTING_WAITING_TIME} from '../store/consts.js'
+import { ANIMATION_SPEED_DELTA, MAX_WAITING_TIME, MIN_WAITING_TIME, STARTING_WAITING_TIME } from '../store/consts.js'
 
 
 
@@ -27,7 +34,7 @@ export default {
     },
     computed: {
         ...mapState(['height', 'width', 'distrabution', 'p', 'boards', 'iterations', 'currentIteration',
-            'L', 'isBoardRunning', 'areDiagonalNeighbors', 'iswrapAround'])
+            'L', 'isBoardRunning', 'areDiagonalNeighbors', 'iswrapAround', 'seeType'])
     },
     data() {
         return {
@@ -235,14 +242,19 @@ export default {
 
         },
         cellToColor(cell) {
-            // if (cell.value === 'S1') return 'red'
-            // if (cell.value === 'S2') return 'green'
-            // if (cell.value === 'S3') return 'yellow'
-            // if (cell.value === 'S4') return 'blue'
+            if (this.seeType) {
 
+
+                if (cell.value === 'S1') return 'red'
+                if (cell.value === 'S2') return 'blue'
+                if (cell.value === 'S3') return 'green'
+                if (cell.value === 'S4') return 'yellow'
+                if (cell.value === 'E') return 'white'
+
+                
+            }
             if (cell.knowRumor === 1) return 'yellow'
             if (cell.knowRumor === 2) return 'red'
-            // if cell.knowRumor === 0 return bright green
             if (cell.knowRumor === 0) return 'lime'
         },
 
@@ -347,6 +359,13 @@ export default {
 </script>
 
 <style scoped>
+
+.color-cell {
+    width: 30px;
+    height: 30px;
+    margin: 3px;
+    border: 1px solid rgb(0, 0, 0);
+}
 .row {
     /* display: flex; */
 }
@@ -356,8 +375,8 @@ export default {
 }
 
 .cell {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     border: 1px solid rgb(0, 0, 0);
 }
 </style>

@@ -51,7 +51,7 @@
         </div>
     </div>
     <button @click="generateBoard" :disabled="isBoardRunning" class="button-generate"
-    :style="{color: errors.some(error => error.active) ? 'red' : 'green'}">
+    :style="{color: errors.some(error => error.active) || isBoardRunning ? 'red' : 'green'}">
         genrate board
     </button>
 
@@ -226,6 +226,7 @@ export default {
             }
             this.iterationsValue = 200;
             this.updateAreDiagonalNeighbors(true)
+            this.distrabutionValue = [0.25, 0.25, 0.25, 0.25]
             this.generateFastBoard()
         },
 
