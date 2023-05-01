@@ -41,7 +41,7 @@ export default {
             areDiagonalsNeighborsValue: false,
         }
     },
-    created() {
+    mounted() {
         this.currentBoard = this.boards.current
         this.iswrapAroundValue = this.iswrapAround
         this.areDiagonalsNeighborsValue = this.areDiagonalNeighbors
@@ -235,7 +235,11 @@ export default {
 
         },
         cellToColor(cell) {
-            if (cell.value === 'E') return 'white'
+            // if (cell.value === 'S1') return 'red'
+            // if (cell.value === 'S2') return 'green'
+            // if (cell.value === 'S3') return 'yellow'
+            // if (cell.value === 'S4') return 'blue'
+
             if (cell.knowRumor === 1) return 'yellow'
             if (cell.knowRumor === 2) return 'red'
             // if cell.knowRumor === 0 return bright green
@@ -354,6 +358,6 @@ export default {
 .cell {
     width: 6px;
     height: 6px;
-    /* border: 1px solid rgb(68, 68, 68); */
+    border: 1px solid rgb(0, 0, 0);
 }
 </style>

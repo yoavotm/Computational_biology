@@ -15,7 +15,6 @@
 <script>
 import { mapActions, mapGetters, mapState } from "vuex"
 import { Chart, Grid, Line } from 'vue3-charts'
-import { Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
 
 import { ref } from 'vue'
 
@@ -84,10 +83,6 @@ export default {
     },
     watch: {
         currentIteration(newVal, oldVal) {
-            console.log("stats on iter:" + newVal)
-            console.log(this.stats)
-
-
             this.data = this.stats
         }
     },

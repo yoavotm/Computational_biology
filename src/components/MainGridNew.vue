@@ -15,7 +15,7 @@
             <div style="grid-area: 3 / 4 / 4 / 5;" id="three">
                 <div class="chart-wrapper">
                     <div class="chart-container">
-                        <MyCharts2 />
+                        <MyCharts />
                     </div>
                 </div>
             </div>
@@ -29,8 +29,6 @@ import Board from './Board.vue'
 import { ref } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 import MyCharts from './MyCharts.vue'
-// import chart v2
-import MyCharts2 from './MyCharts2.vue'
 
 
 
@@ -39,7 +37,6 @@ export default {
         MainSidePanel,
         Board,
         MyCharts,
-        MyCharts2
     },
 
     computed: mapGetters(['sideBarCollapsed', 'rightSideBarCollapsed']),

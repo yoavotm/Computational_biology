@@ -12,7 +12,6 @@ import '@fortawesome/fontawesome-free/css/all.css'
 
 
 
-
 // Import Quasar css
 import 'quasar/src/css/index.sass'
 

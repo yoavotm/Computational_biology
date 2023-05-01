@@ -8,7 +8,7 @@ export default createStore({
     // the height of the board
     height: 100,
     // the number of iterations in the simulation
-    iterations: 600,
+    iterations: 200,
     // the number of iterations that a human doesnt pass the rumer after he passes it
     L: 3,
     // the board and the previous board
@@ -17,16 +17,16 @@ export default createStore({
       last: [],
     },
     // the number of humans in the simulation
-    P: 0.85,
+    P: 0.9,
     // the probability distribution of the 4 states for a human - S1, S2, S3, S4 - in the following order
-    distrabution: [0.2, 0.3, 0.3, 0.2],
+    distrabution: [0.3, 0.3, 0.2, 0.2],
     // the state of the side bar
     sideBarCollapsed: false,
     // the state of the right side bar
     rightSideBarCollapsed: false,
     isBoardRunning: false,
-    iswrapAround: true,
-    areDiagonalNeighbors: true,
+    isWrapAround: false,
+    areDiagonalNeighbors: false,
     currentIteration: 0,
     stats: [],
   },
@@ -41,11 +41,11 @@ export default createStore({
     sideBarCollapsed: (state) => state.sideBarCollapsed,
     rightSideBarCollapsed: (state) => state.rightSideBarCollapsed,
     isBoardRunning: (state) => state.isBoardRunning,
-    iswrapArround: (state) => state.iswrapArround,
+    iswrapAround: (state) => state.iswrapArround,
     areDiagonalNeighbors: (state) => state.areDiagonalNeighbors,
     currentIteration: (state) => state.currentIteration,
-
     stats: (state) => state.stats,
+
   },
   mutations: {
     setWidth: (state, width) => (state.width = width),
@@ -57,7 +57,8 @@ export default createStore({
     setDistrabution: (state, distrabution) =>
       (state.distrabution = distrabution),
     sideBarCollapsed: (state, bool) => (state.sideBarCollapsed = bool),
-    rightSideBarCollapsed: (state, bool) => (state.rightSideBarCollapsed = bool),
+    rightSideBarCollapsed: (state, bool) =>
+      (state.rightSideBarCollapsed = bool),
     isBoardRunning: (state, bool) => (state.isBoardRunning = bool),
     iswrapAround: (state, bool) => (state.iswrapAround = bool),
     areDiagonalNeighbors: (state, bool) => (state.areDiagonalNeighbors = bool),
@@ -224,8 +225,49 @@ export default createStore({
       commit("setBoards", newBoard);
       // update the current iteration in the store
       commit("currentIteration", 0);
-      // reset stats
-      commit('stats', []);
+      // reset the stats in the store
+      commit("stats", []);
+    },
+
+    generateFastBoard({ commit, state }) {
+      let height = state.height;
+      let width = state.width;
+
+      let board = [];
+      for (let i = 0; i < height; i++) {
+        let row = [];
+        for (let j = 0; j < width; j++) {
+          let cell = {
+            value: "E",
+            L: 0,
+            heard: 0,
+            knowRumor: 0,
+          };
+           if ((i + j) % 2 === 0) {
+            cell.value = "S1";
+          } else if ((i + j) % 3 === 0) {
+            cell.value = "S2";
+          }
+          else if ((i + j) % 5 === 0) {
+            cell.value = "S3";
+          }
+          else {
+            cell.value = "S4";
+          }
+          row.push(cell);
+        }
+        board.push(row);
+      }
+
+      let newBoard = {
+        current: board,
+        last: board,
+      };
+      commit("setBoards", newBoard);
+      // update the current iteration in the store
+      commit("currentIteration", 0);
+      // reset the stats in the store
+      commit("stats", []);
     },
 
     // collecting stats about the simulation
@@ -233,6 +275,8 @@ export default createStore({
       let currentBoard = obj.current;
       let iter = obj.iter;
       let stats = state.stats;
+      let ticksRate = state.iterations / 20;
+      if (iter % ticksRate !== 0) return;
 
       // create obj for current iteration
       let currentIteration = {

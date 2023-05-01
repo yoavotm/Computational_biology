@@ -10,6 +10,11 @@
             <label for="height">L</label>
             <input type="number" id="L" v-model.number="LValue" step="1" min="0" :disabled="isBoardRunning">
         </div>
+
+        <div class="board-settings__item">
+            <label for="height">iterations</label>
+            <input type="number" id="L" v-model.number="iterationsValue" step="10" min="0" :disabled="isBoardRunning">
+        </div>
         <div class="board-settings__item">
             <label for="distrabution">distrabution</label>
             <!-- make 2 in each row-->
@@ -50,11 +55,7 @@
         genrate board
     </button>
 
-    <button @click="generateSlowBoard" :disabled="isBoardRunning" class="button-generate" >
-        genrate slow board
-    </button>
-
-    <button @click="generateFastBoard" :disabled="isBoardRunning" class="button-generate">
+    <button @click="setFastBoard" :disabled="isBoardRunning" class="button-generate">
         genrate fast board
     </button>
 
@@ -73,7 +74,7 @@ import { mapGetters, mapActions, mapState } from "vuex"
 export default {
     components: {},
     computed: {
-        ...mapState(['height', 'width', 'distrabution', 'P', 'boards', 'isBoardRunning', 'L', 'areDiagonalNeighbors', 'isWrapAround'])
+        ...mapState(['height', 'width', 'distrabution', 'P', 'boards', 'isBoardRunning', 'L', 'areDiagonalNeighbors', 'isWrapAround', 'iterations']),
     },
     data() {
         return {
@@ -84,6 +85,7 @@ export default {
             isWrapAroundValue: false,
             areDiagonalsNeighborsValue: false,
             LValue: 2,
+            iterationsValue: 200,
             errors: [{
                 message: 'p must be between 0 and 1',
                 active: false,
@@ -116,6 +118,7 @@ export default {
         this.LValue = this.L
         this.isWrapAroundValue = this.isWrapAround
         this.areDiagonalsNeighborsValue = this.areDiagonalNeighbors
+        this.iterationsValue = this.iterations
 
 
     },
@@ -152,12 +155,16 @@ export default {
         areDiagonalsNeighborsValue(newVal, oldVal) {
             if (oldVal === newVal) return
             this.updateAreDiagonalNeighbors(newVal)
+        },
+        iterationsValue(newVal, oldVal) {
+            if (oldVal === newVal) return
+            this.updateIterations(newVal)
         }
 
     },
     methods: {
         ...mapActions(['updateP', 'updateDistrabution', 'updateHeight', 'updateWidth', 'updateBoard', 'updateL',
-                       'updateIswrapAround', 'updateAreDiagonalNeighbors','generateSlowBoard', 'generateFastBoard']),
+                       'updateIswrapAround', 'updateAreDiagonalNeighbors', 'generateFastBoard','updateIterations']),
 
         // functions to check activation of each error
 
@@ -209,6 +216,17 @@ export default {
             this.heightError()
             this.widthError()
             this.LError()
+        },
+
+        setFastBoard() {
+            this.checkErrors()
+
+            if (this.errors.some(error => error.active)) {
+                return
+            }
+            this.iterationsValue = 200;
+            this.updateAreDiagonalNeighbors(true)
+            this.generateFastBoard()
         },
 
 
