@@ -28,6 +28,7 @@ export default createStore({
     isWrapAround: false,
     areDiagonalNeighbors: false,
     currentIteration: 0,
+    seeType: false,
     stats: [],
   },
   getters: {
@@ -44,6 +45,7 @@ export default createStore({
     iswrapAround: (state) => state.iswrapArround,
     areDiagonalNeighbors: (state) => state.areDiagonalNeighbors,
     currentIteration: (state) => state.currentIteration,
+    seeType: (state) => state.seeType,
     stats: (state) => state.stats,
 
   },
@@ -63,6 +65,7 @@ export default createStore({
     iswrapAround: (state, bool) => (state.iswrapAround = bool),
     areDiagonalNeighbors: (state, bool) => (state.areDiagonalNeighbors = bool),
     currentIteration: (state, int) => (state.currentIteration = int),
+    seeType: (state, bool) => (state.seeType = bool),
     stats: (state, arr) => (state.stats = arr),
   },
 
@@ -108,6 +111,10 @@ export default createStore({
 
     updateCurrentIteration({ commit }, int) {
       commit("currentIteration", int);
+    },
+
+    updateSeeType({ commit }, bool) {
+      commit("seeType", bool);
     },
 
     updateStats({ commit }, arr) {
