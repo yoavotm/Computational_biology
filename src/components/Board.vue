@@ -251,15 +251,12 @@ export default {
 
         },
         cellToColor(cell) {
+            if (cell.value === 'E') return 'white'
             if (this.seeType) {
-
-
                 if (cell.value === 'S1') return 'red'
                 if (cell.value === 'S2') return 'blue'
                 if (cell.value === 'S3') return 'green'
                 if (cell.value === 'S4') return 'yellow'
-                if (cell.value === 'E') return 'white'
-                
             }
             if (cell.knowRumor === 1) return 'yellow'
             if (cell.knowRumor === 2) return 'red'
